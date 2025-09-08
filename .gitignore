@@ -1,0 +1,57 @@
+# Built application files
+*.apk
+*.ap_
+*.aab
+
+# Files for the ART/Dalvik VM
+*.dex
+
+# Java class files
+*.class
+
+# Generated files
+/build/
+/captures/
+.gradle/
+.idea/workspace.xml
+.idea/libraries/
+.idea/modules.xml
+.idea/compiler.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+local.properties
+*.iml
+*.iws
+*.ipr
+
+# Android Studio 3+ in .gitignore
+# Uncomment the following lines if you do not want to check your keystore files in.
+#*.jks
+#*.keystore
+
+# DVE and UCLI related files
+#*.dat
+#*.log
+
+# NDK
+# Uncomment if you have NDK projects and want to ignore generated files
+#/obj/
+#/libs/
+
+# External native build files
+.externalNativeBuild/
+
+# Instant Run
+.idea/instant_run_data/
+
+# Android Studio generated files
+.idea/gradle.xml
+.idea/misc.xml
+.idea/vcs.xml
+
+# macOS specific files
+.DS_Store
+
+# Gradle wrapper files
+!gradle-wrapper.jar
+/gradle/wrapper/gradle-wrapper.properties
