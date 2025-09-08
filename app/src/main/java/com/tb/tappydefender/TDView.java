@@ -17,6 +17,11 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 public class TDView extends SurfaceView implements Runnable {
+
+    //region Properties
+    /*********************************************************************
+     * Properties
+     ********************************************************************/
     volatile boolean playing;
     Thread gameThread = null;
 
@@ -46,16 +51,20 @@ public class TDView extends SurfaceView implements Runnable {
     private boolean gameEnded;
 
     private Context context;
+    private  GestureDetector gd;
 
     private Logger LOGGER = Logger.getLogger("TDView");
+    //endregion
 
-    //private final GestureDetector gd;
-
+    //region Lifecycle
+    /*********************************************************************
+     * Lifecycle
+     ********************************************************************/
     public TDView(Context ct, int x, int y){
         super(ct);
 
         this.context = ct;
-        //this.gd = new GestureDetector(context, new GestureListener());
+        this.gd = new GestureDetector(context, new GestureListener());
 
         // Initialize our drawing objects
         ourHolder = getHolder();
@@ -65,6 +74,7 @@ public class TDView extends SurfaceView implements Runnable {
 
         startGame();
     }
+    //endregion
 
     @Override
     public void run() {
@@ -77,7 +87,6 @@ public class TDView extends SurfaceView implements Runnable {
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
-
         switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_UP:
                 player.stopBoosting();
@@ -94,8 +103,6 @@ public class TDView extends SurfaceView implements Runnable {
         }
 
         return true;
-
-
         //return gd.onTouchEvent(motionEvent);
     }
 
