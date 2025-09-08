@@ -5,8 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.view.GestureDetector;
-
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -51,7 +49,9 @@ public class TDView extends SurfaceView implements Runnable {
     private boolean gameEnded;
 
     private Context context;
-    private  GestureDetector gd;
+
+    private long lastTouchUpTime = 0;
+    private  boolean isDoubleClick = false;
 
     private Logger LOGGER = Logger.getLogger("TDView");
     //endregion
@@ -64,7 +64,6 @@ public class TDView extends SurfaceView implements Runnable {
         super(ct);
 
         this.context = ct;
-        this.gd = new GestureDetector(context, new GestureListener());
 
         // Initialize our drawing objects
         ourHolder = getHolder();
@@ -87,23 +86,36 @@ public class TDView extends SurfaceView implements Runnable {
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
+
         switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_UP:
                 player.stopBoosting();
                 break;
 
             case MotionEvent.ACTION_DOWN:
-                if (gameEnded) {
-                    player.stopBoosting();
-                    startGame();
-                } else {
-                    player.setBoosting();
+                long currentTime = System.currentTimeMillis();
+                if(!isDoubleClick && currentTime - lastTouchUpTime < Utilities.DOUBLE_CLICK_TIME_DELTA){
+                    // user is double tapping
+                    isDoubleClick = true;
+                    lastTouchUpTime = currentTime;
+                    if(gameEnded){
+                        player.stopBoosting();
+                        startGame();
+                    }else{
+                        player.setBoosting();
+                    }
+                }
+                else {
+                    lastTouchUpTime = currentTime;
+                    isDoubleClick = false;
+                    if(!gameEnded){
+                        player.setBoosting();
+                    }
                 }
                 break;
         }
 
         return true;
-        //return gd.onTouchEvent(motionEvent);
     }
 
     private void startGame() {
@@ -168,7 +180,7 @@ public class TDView extends SurfaceView implements Runnable {
             sd.update(player.getSpeed());
         }
 
-        if(gameEnded == false){
+        if(!gameEnded){
             distanceRemaining -= player.getSpeed();
             timeTaken = System.currentTimeMillis() - timeStarted;
         }
@@ -263,9 +275,7 @@ public class TDView extends SurfaceView implements Runnable {
 
             // draw the hud
 
-            if(gameEnded == false) {
-
-
+            if(!gameEnded) {
                 paint.setTextAlign(Paint.Align.LEFT);
                 paint.setColor(Color.argb(255, 255, 255, 255));
                 paint.setTextSize(35);
@@ -284,7 +294,7 @@ public class TDView extends SurfaceView implements Runnable {
                 canvas.drawText("Time: " +  timeTaken + "s", screenX / 2, 210, paint);
                 canvas.drawText("Distance remaining: " + distanceRemaining / 1000 + "KM", screenX / 2, 250, paint);
                 paint.setTextSize(90);
-                canvas.drawText("Tap to replay!", screenX / 2, 360, paint);
+                canvas.drawText("Double Tap to replay!", screenX / 2, 360, paint);
 
             }
 
@@ -318,38 +328,5 @@ public class TDView extends SurfaceView implements Runnable {
 
     public boolean getGameEnded(){
         return gameEnded;
-    }
-
-    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
-        @Override
-        public boolean onDown(MotionEvent motionEvent) {
-            switch(motionEvent.getAction() & MotionEvent.ACTION_MASK){
-                case MotionEvent.ACTION_UP:
-                    player.stopBoosting();
-                    break;
-
-                case MotionEvent.ACTION_DOWN:
-                    if(gameEnded) {
-                        player.stopBoosting();
-                        startGame();
-                    }else{
-                        player.setBoosting();
-                    }
-                    break;
-            }
-
-            return true;
-        }
-
-        // event when double tap occurs
-        @Override
-        public boolean onDoubleTap(MotionEvent motionEvent) {
-            if(gameEnded){
-                player.stopBoosting();
-                startGame();
-            }
-
-            return true;
-        }
     }
 }
