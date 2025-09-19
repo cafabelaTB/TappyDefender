@@ -1,6 +1,7 @@
 package com.tb.tappydefender;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.graphics.Canvas;
@@ -61,11 +62,14 @@ public class TDView extends SurfaceView implements Runnable {
 
     private boolean gameEnded;
 
-    private Context context;
-
     private long lastTouchUpTime = 0;
     private  boolean isDoubleClick = false;
 
+    // For saving highest score
+    private SharedPreferences prefs;
+    private SharedPreferences.Editor editor;
+
+    private Context context;
     private Logger LOGGER = Logger.getLogger("TDView");
     //endregion
 
@@ -97,6 +101,10 @@ public class TDView extends SurfaceView implements Runnable {
         }catch (IOException e){
             LOGGER.info("error, failed to load sound files");
         }
+        prefs = context.getSharedPreferences(Utilities.HIGH_SCORES_FILE_ID, context.MODE_PRIVATE);
+        editor = prefs.edit();
+
+        fastestTime = prefs.getLong(Utilities.FASTEST_SCORE_ID, 1000000);
 
         // Initialize our drawing objects
         ourHolder = getHolder();
@@ -241,6 +249,10 @@ public class TDView extends SurfaceView implements Runnable {
             // check for new fastest time
             if(timeTaken < fastestTime){
                 LOGGER.info("New fastestTime: "+ fastestTime);
+
+                // save high score
+                editor.putLong(Utilities.FASTEST_SCORE_ID, timeTaken);
+                editor.commit();
                 fastestTime = timeTaken;
             }
 
