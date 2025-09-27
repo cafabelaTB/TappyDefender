@@ -9,6 +9,11 @@ import java.util.Random;
 import java.util.logging.Logger;
 
 public class EnemyShip {
+
+    //region Properties
+    /*********************************************************************
+     * Properties
+     ********************************************************************/
     // object image
     private Bitmap bitmap;
 
@@ -28,8 +33,12 @@ public class EnemyShip {
 
     // Logger
     private Logger LOGGER;
+    //endregion
 
-    // constructor
+    //region Constructor
+    /*********************************************************************
+     * Constructor
+     * ********************************************************************/
     public EnemyShip(Context context, int screenX, int screenY, int enemyId){
         Random generator = new Random();
         int whichBitmap = generator.nextInt(3);
@@ -47,6 +56,8 @@ public class EnemyShip {
                 break;
         }
 
+        scaleBitmap(screenX);
+
         maxX = screenX;
         maxY = screenY;
         minX = 0;
@@ -60,6 +71,12 @@ public class EnemyShip {
         hitbox = new Rect(x, y, bitmap.getWidth(), bitmap.getHeight());
         LOGGER =  Logger.getLogger("EnemyShip #:"  +enemyId);
     }
+    //endregion
+
+    //region PublicMethods
+    /*********************************************************************
+     * Public Methods
+     ********************************************************************/
 
     public void update(int playerSpeed){
         // move to the left
@@ -106,4 +123,24 @@ public class EnemyShip {
     public void setX(int x){
         this.x = x;
     }
+    //endregion
+
+    //region Internals
+    /*********************************************************************
+     * Internals
+     ********************************************************************/
+    private void scaleBitmap(int x){
+        if(x < 1000){
+            bitmap = Bitmap.createScaledBitmap(bitmap,
+                    bitmap.getWidth() / 3,
+                    bitmap.getHeight() / 3,
+                    false);
+        }else if(x < 1200){
+            bitmap = Bitmap.createScaledBitmap(bitmap,
+                    bitmap.getWidth() / 2,
+                    bitmap.getHeight() / 2,
+                    false);
+        }
+    }
+    //endregion
 }
