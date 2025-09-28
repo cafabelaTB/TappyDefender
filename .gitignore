@@ -52,6 +52,3 @@ local.properties
 # macOS specific files
 .DS_Store
 
-# Gradle wrapper files
-!gradle-wrapper.jar
-/gradle/wrapper/gradle-wrapper.properties
