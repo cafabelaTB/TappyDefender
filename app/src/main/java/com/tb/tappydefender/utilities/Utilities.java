@@ -11,4 +11,14 @@ public class Utilities {
     public static boolean isDebuggerAttached(){
         return Debug.isDebuggerConnected();
     }
+
+    public static String formatTime(long time){
+        long seconds = time / 1000;
+        long thounsandths = time - (seconds * 1000);
+        String strThoundsandths = "" + thounsandths;
+        if(thounsandths < 100){strThoundsandths = "0" + thounsandths;}
+        if(thounsandths < 10){strThoundsandths = "0" + strThoundsandths;}
+        String  stringTime =  seconds + "." + strThoundsandths;
+        return stringTime;
+    }
 }
